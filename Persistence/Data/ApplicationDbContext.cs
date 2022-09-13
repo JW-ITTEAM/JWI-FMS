@@ -12,8 +12,7 @@ namespace Persistence.Data
 
             // Last Update Version
             // Database Document 08222022
-        }
-        public DbSet<SuperHero> SuperHeroes { get; set; }
+        }        
         public DbSet<T_OIMMAIN> T_OIMMAIN { get; set; }
         public DbSet<T_OIHMAIN> T_OIHMAIN { get; set; }
         public DbSet<T_USER> T_USER { get; set; }

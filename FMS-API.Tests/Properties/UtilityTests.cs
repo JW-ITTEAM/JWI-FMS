@@ -1,4 +1,4 @@
-﻿using FMS_API.Controllers;
+﻿using Application;
 
 namespace FMS_API.Tests.Properties
 {

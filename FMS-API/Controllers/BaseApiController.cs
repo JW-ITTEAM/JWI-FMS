@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Persistence.Data;
 
 namespace FMS_API.Controllers
 {
