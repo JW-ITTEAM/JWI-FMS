@@ -2,7 +2,7 @@
 using Domain.Entities;
 using Domain.Models;
 
-namespace FMS_API.Profiles
+namespace Application.Profiles
 {
     public class UserProfile : Profile
     {

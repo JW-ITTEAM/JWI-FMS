@@ -1,4 +1,4 @@
-﻿namespace FMS_API.Controllers
+﻿namespace Application
 {
     public static class Utility
     {

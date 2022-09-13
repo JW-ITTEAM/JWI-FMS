@@ -2,7 +2,7 @@
 using Persistence.Data;
 using System.Linq.Expressions;
 
-namespace FMS_API.Repositories
+namespace Application.Repositories
 {
     public interface IRepository<TEntity> where TEntity : class
     {

@@ -1,9 +1,9 @@
 ﻿using Domain.Entities;
-using FMS_API.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Data;
+using Application;
 
-namespace FMS_API.Repositories
+namespace Application.Repositories
 {
     public interface IShipmentRepository
     {

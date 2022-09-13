@@ -1,4 +1,4 @@
-using FMS_API.Repositories;
+using Application.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Data;
 

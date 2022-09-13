@@ -1,6 +1,6 @@
-﻿using AutoMapper;
+﻿using Application.Repositories;
+using AutoMapper;
 using Domain.Models;
-using FMS_API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FMS_API.Controllers
