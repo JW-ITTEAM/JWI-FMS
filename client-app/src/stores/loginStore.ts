@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { objectPrototype } from "mobx/dist/internal";
+import { CurrentUserProps } from "../models/CurrentUserProps";
 import { UserLoginProps } from "../models/UserLoginProps";
 import { UserRegisterProps } from "../models/UserRegisterProps";
 
@@ -15,6 +16,14 @@ export default class LoginStore {
     password: "",
     passwordconfirm: "",
     chkagree: false,
+  };
+
+  currentUserProps: CurrentUserProps = {
+    f_UserName: "",
+    f_UserEmail: "",
+    f_Phone: "",
+    f_Fax: "",
+    f_EmailVerified: false,
   };
 
   constructor() {
@@ -36,5 +45,13 @@ export default class LoginStore {
     } else if (targetLower === "register") {
       this.userRegisterProps[name] = value;
     }
+  };
+
+  setCurrentUserProps = async (props: CurrentUserProps) => {
+    this.currentUserProps.f_UserEmail = props.f_UserEmail;
+    this.currentUserProps.f_UserName = props.f_UserName;
+    this.currentUserProps.f_Phone = props.f_Phone;
+    this.currentUserProps.f_Fax = props.f_Fax;
+    this.currentUserProps.f_EmailVerified = props.f_EmailVerified;
   };
 }

@@ -1,4 +1,5 @@
 using Application.Repositories;
+using FMS_API.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Data;
 
@@ -25,6 +26,7 @@ builder.Services.AddCors(opt =>
         policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
     });
 });
+builder.Services.AddIdentityServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -40,7 +42,7 @@ void SeedData(IHost app)
     using (var scope = scopedFactory.CreateScope())
     {
         var service = scope.ServiceProvider.GetService<DbInitializer>();
-        service.Initialize();
+        service.Initialize();        
     }
 }
 

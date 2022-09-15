@@ -9,9 +9,16 @@ import {
   User,
 } from "firebase/auth";
 import { isNull } from "lodash";
-import { FIREBASE_WEB_FMS_API_KEY } from "../config/SystemConfig";
+import {
+  FIREBASE_WEB_FMS_API_KEY,
+  FMS_CLIENT_URL,
+} from "../config/SystemConfig";
 import { stringIsNullOrEmpty, validationEmail } from "./CommonUtil";
 import { MsgManager } from "./MsgManager";
+import LoginStore from "./../stores/loginStore";
+import { CurrentUserProps } from "../models/CurrentUserProps";
+import nProgress from "nprogress";
+import { DASHBOARD_URI, EMAILCONFIRM_URI } from "../config/UriConfig";
 
 // Declare Obj
 const firebaseApp = initializeApp({
@@ -23,20 +30,20 @@ const firebaseApp = initializeApp({
   appId: "1:738534569841:web:fb6ebe76761fb349dce8d0",
 });
 
-const actionCodeSettings = {
-  url: "http://localhost:3000/",
-  handleCodeInApp: true,
-};
-
-const auth = getAuth(firebaseApp);
+export const auth = getAuth(firebaseApp);
 const provider = new GoogleAuthProvider();
+const actionCodeSettings = {
+  url: FMS_CLIENT_URL + "/" + DASHBOARD_URI,
+};
 // Declare Obj
 
 // Google Login
-const signInGoogleEmail = async () => {
+const signInGoogleEmail = async (loginStore: LoginStore) => {
   const userCredential = await signInWithPopup(auth, provider)
-    .then((result) => {
+    .then(async (result) => {
       console.log("success");
+      let user = auth.currentUser;
+      await loginOperationProcess(user, loginStore);
       return result;
     })
     .catch((error) => {
@@ -50,12 +57,12 @@ const signInGoogleEmail = async () => {
 // Google Login
 
 // Email Password Login and Create Account
-const signUpEmail = async (
-  email: string,
-  password: string,
-  passwordconfirm: string,
-  chkagree: boolean
-) => {
+const signUpEmail = async (loginStore: LoginStore) => {
+  let email = loginStore.userRegisterProps.email;
+  let password = loginStore.userRegisterProps.password;
+  let passwordconfirm = loginStore.userRegisterProps.passwordconfirm;
+  let chkagree = loginStore.userRegisterProps.chkagree;
+
   if (loginValidCheck(email, password, passwordconfirm, chkagree)) {
     MsgManager({
       defaultConfirm: true,
@@ -70,6 +77,7 @@ const signUpEmail = async (
             let user = auth.currentUser;
             if (user !== null) {
               await emailVerification(user);
+              await loginOperationProcess(user, loginStore);
             } else {
               MsgManager({
                 icon: "error",
@@ -92,10 +100,17 @@ const signUpEmail = async (
   return;
 };
 
-const emailVerification = async (user: User) => {
-  await sendEmailVerification(user)
+const emailVerification = async (user: User, messageOn: boolean = false) => {
+  await sendEmailVerification(user, actionCodeSettings)
     .then(() => {
-      console.log("email verification sent");
+      if (messageOn) {
+        MsgManager({
+          icon: "success",
+          title: "Verification email sent successfully.",
+        });
+      } else {
+        console.log("email verification sent");
+      }
     })
     .catch((error) => {
       MsgManager({
@@ -105,20 +120,23 @@ const emailVerification = async (user: User) => {
     });
 };
 
-const loginEmail = async (email: string, password: string) => {
+const loginEmail = async (loginStore: LoginStore) => {
+  let email = loginStore.userLoginProps.email;
+  let password = loginStore.userLoginProps.password;
   if (loginValidCheck(email, password)) {
+    nProgress.start();
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
       password
     )
-      .then((result) => {
-        console.log(result);
+      .then(async (result) => {
         const user = result.user;
-        const email = user.email;
-        const uid = user.uid;
+        await loginOperationProcess(user, loginStore);
+        nProgress.done();
       })
       .catch((error) => {
+        nProgress.done();
         MsgManager({
           error: error,
         });
@@ -201,12 +219,42 @@ const loginValidCheck = (
   }
   return true;
 };
+
+const setCurrentUserProps = async (user: any, loginStore: LoginStore) => {
+  const currentUserProps: CurrentUserProps = {
+    f_UserName: user.displayName ?? "",
+    f_UserEmail: user.email ?? "",
+    f_Phone: user.phoneNumber ?? "",
+    f_Fax: "",
+    f_EmailVerified: user.emailVerified,
+  };
+  await loginStore.setCurrentUserProps(currentUserProps);
+};
+
+const loginOperationProcess = async (user: any, loginStore: LoginStore) => {
+  await setCurrentUserProps(user, loginStore);
+  if (!user.emailVerified) {
+    window.open(EMAILCONFIRM_URI, "_self");
+    return;
+  }
+  window.open(DASHBOARD_URI, "_self");
+};
+
+const getCurrentUser = () => {
+  let user = auth.currentUser;
+  if (user === null) {
+    window.open(DASHBOARD_URI, "_self");
+  }
+  return user;
+};
 // Util
 
 export const firebaseConn = {
   signUpEmail,
   loginEmail,
   signInGoogleEmail,
+  emailVerification,
+  getCurrentUser,
 };
 
 export default firebaseConn;

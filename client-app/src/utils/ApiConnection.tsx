@@ -3,6 +3,7 @@ import {
   FMS_API_URL,
   API_URL_OCEAN_IMPORT_LIST,
   API_URL_OCEAN_IMPORT_DETAIL,
+  API_URL_LOGIN_PROCESS,
 } from "../config/SystemConfig";
 import { MsgManager } from "./MsgManager";
 
@@ -58,8 +59,13 @@ const OceanImports = {
     requests.get(API_URL_OCEAN_IMPORT_DETAIL + encodeURIComponent(rmh_id)),
 };
 
+const Logins = {
+  signIn: (user: object) => requests.post(API_URL_LOGIN_PROCESS, user),
+};
+
 const axiosConn = {
   OceanImports,
+  Logins,
 };
 
 export default axiosConn;

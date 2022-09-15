@@ -12,25 +12,14 @@ function Login(props: LoginProps) {
   const { commonStore, loginStore } = useStore();
   commonStore.fullPageControl(location.pathname);
 
-  const signInSubmit = (event: any) => {
+  const signInSubmit = async (event: any) => {
     event.preventDefault();
-    firebaseConn.loginEmail(
-      loginStore.userLoginProps.email,
-      loginStore.userLoginProps.password
-    );
+    await firebaseConn.loginEmail(loginStore);
   };
 
   const signInGoogleEmail = async (event: any) => {
     event.preventDefault();
-    const userCredential: any = await firebaseConn.signInGoogleEmail();
-    console.log(userCredential);
-    if (userCredential !== undefined) {
-      // login success
-      history.push({
-        pathname: "/dashboard/",
-        userCredential: userCredential.user,
-      });
-    }
+    await firebaseConn.signInGoogleEmail(loginStore);
   };
 
   return (

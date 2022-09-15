@@ -2,7 +2,6 @@ import { observer } from "mobx-react-lite";
 import { Link, useLocation, withRouter } from "react-router-dom";
 import { useStore } from "../../stores/store";
 import firebaseConn from "../../utils/FireBaseManager";
-import { MsgManager } from "../../utils/MsgManager";
 
 export interface RegisterProps {}
 
@@ -13,12 +12,7 @@ function Register(props: RegisterProps) {
 
   const signUpEmail = async (event: any) => {
     event.preventDefault();
-    firebaseConn.signUpEmail(
-      loginStore.userRegisterProps.email,
-      loginStore.userRegisterProps.password,
-      loginStore.userRegisterProps.passwordconfirm,
-      loginStore.userRegisterProps.chkagree
-    );
+    firebaseConn.signUpEmail(loginStore);
   };
 
   return (
@@ -49,17 +43,6 @@ function Register(props: RegisterProps) {
                     onChange={(e) => loginStore.onChangeProps(e, "register")}
                   />
                 </div>
-                {/* <div className="form-group">
-                  <input
-                    type="text"
-                    className="form-control form-control-lg"
-                    id="exampleInputUsername1"
-                    placeholder="Username"
-                    name="username"
-                    value={loginStore.userRegisterProps.username}
-                    onChange={(e) => loginStore.onChangeProps(e, "register")}
-                  />
-                </div> */}
                 <div className="form-group">
                   <input
                     type="password"
