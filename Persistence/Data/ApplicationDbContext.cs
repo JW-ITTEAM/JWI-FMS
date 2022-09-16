@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +28,13 @@ namespace Persistence.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            //modelBuilder.Entity<IdentityUser>().ToTable("T_USER");            
+            //modelBuilder.Entity<IdentityRole>().ToTable("T_ROLE");
+            //modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("T_USERCLAIM");
+            //modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("T_ROLECLAIM");
+            //modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("T_USERLOGIN");
+            //modelBuilder.Entity<IdentityUserToken<string>>().ToTable("T_USERTOKEN");
+
             modelBuilder.Entity<T_CONTAINER>(opt =>
             {
                 opt.HasKey(x => x.F_ID);
@@ -46,14 +54,14 @@ namespace Persistence.Data
 
             modelBuilder.Entity<T_USER>(opt =>
             {
-                opt.HasKey(x => x.F_ID);
+                opt.HasKey(x => x.F_UserId);
                 opt.Property(x => x.F_UserId).HasMaxLength(20);
                 opt.Property(x => x.F_UserPwd).HasMaxLength(20);
                 opt.Property(x => x.F_UserName).HasMaxLength(30);
                 opt.Property(x => x.F_UserEmail).HasMaxLength(100);
                 opt.Property(x => x.F_Phone).HasMaxLength(20);
                 opt.Property(x => x.F_FAX).HasMaxLength(20);
-                opt.Property(x => x.F_Dept).HasMaxLength(10);
+                opt.Property(x => x.F_Dept).HasMaxLength(10);                
             });
 
             modelBuilder.Entity<T_COMPANY>(opt =>

@@ -242,9 +242,9 @@ const loginOperationProcess = async (user: any, loginStore: LoginStore) => {
 
 const getCurrentUser = () => {
   let user = auth.currentUser;
-  if (user === null) {
-    window.open(DASHBOARD_URI, "_self");
-  }
+  // if (user === null) {
+  //   window.open(DASHBOARD_URI, "_self");
+  // }
   return user;
 };
 // Util

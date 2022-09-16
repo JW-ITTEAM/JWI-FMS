@@ -2,9 +2,8 @@ import { User } from "firebase/auth";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { useLocation, withRouter } from "react-router-dom";
-import { DASHBOARD_URI } from "../../config/UriConfig";
 import { useStore } from "../../stores/store";
-import firebaseConn from "../../utils/FireBaseManager";
+import firebaseConn, { auth } from "../../utils/FireBaseManager";
 
 export interface IEmailConfirmProps {}
 
@@ -12,10 +11,12 @@ function EmailConfirm(props: IEmailConfirmProps) {
   const { commonStore, loginStore } = useStore();
   const location: any = useLocation();
   commonStore.fullPageControl(location.pathname);
+  let user = firebaseConn.getCurrentUser();
+  console.log(user);
+  console.log("auth.currentUser : " + auth.currentUser);
 
   console.log(
-    "loginStore.currentUserProps.f_EmailVerified : " +
-      loginStore.currentUserProps.f_EmailVerified
+    "loginStore.currentUserProps : " + loginStore.currentUserProps.f_UserEmail
   );
 
   // useEffect(() => {
@@ -26,7 +27,6 @@ function EmailConfirm(props: IEmailConfirmProps) {
 
   const sendEmailVerification = async (event: any) => {
     event.preventDefault();
-    let user = firebaseConn.getCurrentUser();
     if (user) firebaseConn.emailVerification(user, true);
   };
 

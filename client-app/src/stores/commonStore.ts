@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import nProgress from "nprogress";
-import { EMAILCONFIRM_URI } from "../config/UriConfig";
+import { EMAILCONFIRM_URI, LOGIN_URI } from "../config/UriConfig";
 
 export default class CommonStore {
   isLoading = false;
@@ -25,7 +25,7 @@ export default class CommonStore {
 
   fullPageControl = (pathname: string) => {
     window.scrollTo(0, 0);
-    const fullPageLayoutRoutes = ["/login", "/register", EMAILCONFIRM_URI];
+    const fullPageLayoutRoutes = [LOGIN_URI, "/register", EMAILCONFIRM_URI];
     for (let i = 0; i < fullPageLayoutRoutes.length; i++) {
       if (pathname === fullPageLayoutRoutes[i]) {
         this.setFullLayout(true);
