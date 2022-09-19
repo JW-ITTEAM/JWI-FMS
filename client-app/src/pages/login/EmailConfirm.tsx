@@ -11,13 +11,6 @@ function EmailConfirm(props: IEmailConfirmProps) {
   const { commonStore, loginStore } = useStore();
   const location: any = useLocation();
   commonStore.fullPageControl(location.pathname);
-  let user = firebaseConn.getCurrentUser();
-  console.log(user);
-  console.log("auth.currentUser : " + auth.currentUser);
-
-  console.log(
-    "loginStore.currentUserProps : " + loginStore.currentUserProps.f_UserEmail
-  );
 
   // useEffect(() => {
   //   if (loginStore.currentUserProps.f_EmailVerified) {
@@ -27,6 +20,7 @@ function EmailConfirm(props: IEmailConfirmProps) {
 
   const sendEmailVerification = async (event: any) => {
     event.preventDefault();
+    let user = firebaseConn.getCurrentUser();
     if (user) firebaseConn.emailVerification(user, true);
   };
 

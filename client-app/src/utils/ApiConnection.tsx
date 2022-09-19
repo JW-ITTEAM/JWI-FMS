@@ -56,7 +56,9 @@ const requests = {
 const OceanImports = {
   list: () => requests.get(API_URL_OCEAN_IMPORT_LIST),
   detail: (rmh_id: string) =>
-    requests.get(API_URL_OCEAN_IMPORT_DETAIL + encodeURIComponent(rmh_id)),
+    requests.get(
+      API_URL_OCEAN_IMPORT_DETAIL + "/" + encodeURIComponent(rmh_id)
+    ),
 };
 
 const Logins = {

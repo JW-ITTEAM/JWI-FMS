@@ -23,6 +23,7 @@ export default class ShipmentStore {
   };
 
   loadOceanImportDetail = async (rmh_id: string) => {
+    console.log("loadOceanImportDetail : ");
     this.setLoading(true);
     const oim = await axiosConn.OceanImports.detail(rmh_id);
     this.setDetail(oim);
