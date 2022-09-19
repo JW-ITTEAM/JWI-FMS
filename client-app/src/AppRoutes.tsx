@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
+import AuthRoute from "./components/routeHelper/AuthRoute";
 
 export interface IAppRoutesProps {}
 
@@ -22,6 +23,11 @@ const Login = lazy(() => import("./pages/login/Login"));
 const Register = lazy(() => import("./pages/login/Register"));
 const EmailConfirm = lazy(() => import("./pages/login/EmailConfirm"));
 
+const Token = localStorage.getItem("Token");
+const IsLogin = !!Token;
+console.log("IsLogin : " + IsLogin);
+console.log("Token : " + Token);
+
 export default class AppRoutes extends React.Component<IAppRoutesProps> {
   public render() {
     return (
@@ -35,18 +41,20 @@ export default class AppRoutes extends React.Component<IAppRoutesProps> {
           <Route exact path="/dashboard" component={Dashboard} />
           <Route
             exact
-            path="/shipments/intg_board/"
+            path="/shipments/intg_board"
             component={ShipmentIntgBoard}
           />
           <Route
-            path="/shipments/intg_ocean_detail/"
+            path="/shipments/intg_ocean_detail"
             component={ShipmentIntgBoardOceanDetail}
           />
           <Route path="/tables/basic-table" component={BasicTable} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/emailconfirm" component={EmailConfirm} />
+          <AuthRoute path="/test" authenticated={false} component={Dashboard} />
           <Redirect to="/dashboard" />
+          {IsLogin ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
         </Switch>
       </Suspense>
     );

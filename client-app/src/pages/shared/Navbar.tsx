@@ -3,6 +3,7 @@ import Icon from "@mdi/react";
 import React, { Component } from "react";
 import { Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { LOGIN_URI } from "../../config/UriConfig";
 
 class Navbar extends Component {
   toggleOffcanvas() {
@@ -11,6 +12,11 @@ class Navbar extends Component {
   // toggleRightSidebar() {
   //   document.querySelector(".right-sidebar")?.classList.toggle("open");
   // }
+  logOut(event: any) {
+    event.preventDefault();
+    localStorage.removeItem("Token");
+    window.open(LOGIN_URI, "_self");
+  }
 
   render() {
     return (
@@ -324,7 +330,7 @@ class Navbar extends Component {
                 <Dropdown.Divider />
                 <Dropdown.Item
                   href="!#"
-                  onClick={(evt) => evt.preventDefault()}
+                  onClick={this.logOut}
                   className="preview-item"
                 >
                   <div className="preview-thumbnail">

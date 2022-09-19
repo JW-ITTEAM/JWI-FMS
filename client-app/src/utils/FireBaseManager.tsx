@@ -233,11 +233,14 @@ const setCurrentUserProps = async (user: any, loginStore: LoginStore) => {
 
 const loginOperationProcess = async (user: any, loginStore: LoginStore) => {
   await setCurrentUserProps(user, loginStore);
+  // localstorage save token information.
+  localStorage.setItem("Token", user.accessToken);
   if (!user.emailVerified) {
     window.open(EMAILCONFIRM_URI, "_self");
     return;
   }
   window.open(DASHBOARD_URI, "_self");
+  // console.log(user);
 };
 
 const getCurrentUser = () => {
