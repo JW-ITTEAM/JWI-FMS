@@ -2,8 +2,8 @@ import axios from "axios";
 import { useState, useEffect } from 'react';
 import {ApiResponse, FileItem } from "../../components/fileResponse";
 import { Form, Dropdown, ButtonGroup } from 'react-bootstrap';
-//test EYJ
-import classNames from 'classnames'
+import { useHistory } from "react-router-dom";
+
 
 
 export interface IFileUploadForm {}
@@ -11,7 +11,8 @@ export interface IFileUploadForm {}
 export default function FileUploadForm({fileItems, setFileItems} : {fileItems:Array<FileItem>, 
                                         setFileItems: React.Dispatch<React.SetStateAction<FileItem[]>>}) {
 
-  
+  //
+  const history = useHistory();
   // state for uploading files
   const [file, setFile] = useState<File>(); 
   const [refNo, setRefNo] = useState({refNo : 'oim-12345'});  
@@ -173,6 +174,7 @@ export default function FileUploadForm({fileItems, setFileItems} : {fileItems:Ar
                         <input className="col-md-9"  style={{ padding : "0rem 0rem" }}  type="file" onChange={fileUploadValidHandler}/>
                     </div>
                     <button className="btn btn-primary me-2" onClick={fileUploadHandler}>Submit</button>
+                    <button className="btn btn-primary me-2" onClick={() => history.push('/shipments/oim')}>link test</button>
                 </div>  
             </div>
             </div>

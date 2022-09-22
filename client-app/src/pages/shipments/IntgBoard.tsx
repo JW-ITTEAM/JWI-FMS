@@ -51,7 +51,7 @@ function IntgBoard(props: IIntgBoardProps) {
                 />
               </div>
               <div className="col-lg-4 text-right">
-                <button className="btn btn-primary">CREATE</button>
+                <button onClick={() => history.push('/fileDrop/file_upload/')} className="btn btn-primary">CREATE</button>
               </div>
             </div>
             <div className="row">
