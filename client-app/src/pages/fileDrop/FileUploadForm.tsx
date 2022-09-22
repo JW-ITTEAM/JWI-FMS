@@ -57,7 +57,7 @@ export default function FileUploadForm({fileItems, setFileItems} : {fileItems:Ar
       return;
     }
 
-    // validation을 정상적으로 통과한 File
+    // validated File
     setFile(files);
   }
 
@@ -128,15 +128,6 @@ export default function FileUploadForm({fileItems, setFileItems} : {fileItems:Ar
     // file extension
     const extension = removeFileName(name);
 
-    /**
-     * 허용가능한 확장자가 있는지 확인하는 부분은 indexOf를 사용해도 괜찮고, 
-     * 새롭게 나온 includes를 사용해도 괜찮고, 그밖의 다른 방법을 사용해도 좋다.
-     * 성능과 취향의 따라 사용하면 될것같다.
-     * 
-     * indexOf의 경우
-     * 허용가능한 확장자가 있을경우 
-     * ALLOW_FILE_EXTENSION 상수의 해당 확장자 첫 index 위치값을 반환
-     */
     if(!(ALLOW_FILE_EXTENSION.indexOf(extension) > -1) || extension === '') {
       return false;
     }
@@ -149,42 +140,42 @@ export default function FileUploadForm({fileItems, setFileItems} : {fileItems:Ar
    * @returns  only extension right after   "."
    */
   const removeFileName = (originalFileName:string):string => {
-    // 마지막 .의 위치를 구한다
-    // 마지막 .의 위치다음이 파일 확장자를 의미한다
+    // file extension after .
     const lastIndex = originalFileName.lastIndexOf(".");
 
-    // 파일 이름에서 .이 존재하지 않는 경우이다.
-    // 이경우 파일 확장자가 존재하지 않는경우(?)를 의미한다.
+    // in case file name doesn't have "."
     if(lastIndex < 0) {
       return "";
     }
 
-    // substring을 함수를 이용해 확장자만 잘라준다
-    // lastIndex의 값은 마지막 .의 위치이기 때문에 해당 위치 다음부터 끝까지 문자열을 잘라준다.
-    // 문자열을 자른 후 소문자로 변경시켜 확장자 값을 반환 해준다.
     return originalFileName.substring(lastIndex+1).toLocaleLowerCase();
   }
   
   return (      
       <div className="row">
           <Form.Group>
-            <h4>File upload</h4>
-
-            <div className="row">
-              <label className="col-sm-8 col-form-label">Choose only 1 file</label>
-              <select onChange={selectChange}>
-                <option selected disabled>
-                  Choose one
-                </option>
-                <option value="master">Master B/L</option>
-                <option value="house">House B/L</option>
-              </select>             
+          <div className="row">
+              <div className="form-group row">
+                <div className="card-body">
+                    <h3 className="card-title">File Upload</h3>              
+                    <div className="form-group row" style={{ fontSize: "0.8em" }} >
+                        <p className="card-description col-sm-3">File type</p>                      
+                        <select  style={{ marginBottom: "1.0em" }}  className="col-md-6 shadow" onChange={selectChange}>
+                          <option  selected disabled>
+                            Choose one
+                          </option>
+                          <option  value="master">Master B/L</option>
+                          <option  value="house">House B/L</option>
+                        </select>
+                    </div>
+                    <div className="form-group row" style={{ fontSize: "0.8em" }} >
+                        <p className="card-description col-sm-3">File</p>
+                        <input className="col-md-9"  style={{ padding : "0rem 0rem" }}  type="file" onChange={fileUploadValidHandler}/>
+                    </div>
+                    <button className="btn btn-primary me-2" onClick={fileUploadHandler}>Submit</button>
+                </div>  
             </div>
-            <div className="row">
-              <input type="file" onChange={fileUploadValidHandler}/>
-      <br/>
-      <button onClick={fileUploadHandler}>Submit</button>
-            </div>           
+            </div>
           </Form.Group>
       </div> 
   )
