@@ -173,8 +173,7 @@ export default function FileUploadForm({fileItems, setFileItems} : {fileItems:Ar
                         <p className="card-description col-sm-3">File</p>
                         <input className="col-md-9"  style={{ padding : "0rem 0rem" }}  type="file" onChange={fileUploadValidHandler}/>
                     </div>
-                    <button className="btn btn-primary me-2" onClick={fileUploadHandler}>Submit</button>
-                    <button className="btn btn-primary me-2" onClick={() => history.push('/shipments/oim')}>link test</button>
+                    <button className="btn btn-primary me-2" onClick={fileUploadHandler}>Submit</button>                    
                 </div>  
             </div>
             </div>
