@@ -23,6 +23,9 @@ const Login = lazy(() => import("./pages/login/Login"));
 const Register = lazy(() => import("./pages/login/Register"));
 const EmailConfirm = lazy(() => import("./pages/login/EmailConfirm"));
 
+//EYJ
+const FileUpload = lazy(()=> import("./pages/fileDrop/FileUploadPage"));
+
 const Token = localStorage.getItem("Token");
 const IsLogin = !!Token;
 console.log("IsLogin : " + IsLogin);
@@ -52,6 +55,7 @@ export default class AppRoutes extends React.Component<IAppRoutesProps> {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/emailconfirm" component={EmailConfirm} />
+          <Route exact path="/fileDrop/file_upload/" component={FileUpload} />
           <AuthRoute path="/test" authenticated={false} component={Dashboard} />
           <Redirect to="/dashboard" />
           {IsLogin ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
