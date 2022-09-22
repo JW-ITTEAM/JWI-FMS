@@ -316,6 +316,23 @@ class Sidebar extends Component<RouteComponentProps> {
             </Link>
           </li>
           {/* Admin */}
+           
+          {/* FileDrop  by EYJ*/}
+          <li
+            className={
+              this.isPathActive("/fileDrop/file_drop/")
+                ? "nav-item menu-items active"
+                : "nav-item menu-items"
+            }
+          >
+            <Link className="nav-link" to="/fileDrop/file_drop/">
+              <span className="menu-icon">
+                <i className="mdi mdi-ferry"></i>
+              </span>
+              <span className="menu-title">File Drop</span>
+            </Link>
+          </li>
+          {/* File Upload  by EYJ*/}
 
           {/* Basic Ui Element */}
           {/* <li
