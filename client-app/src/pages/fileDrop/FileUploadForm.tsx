@@ -32,7 +32,7 @@ export default function FileUploadForm({fileItems, setFileItems} : {fileItems:Ar
   /**
    * when file  is selected :  onChangeHandler
    * file validation : file extension and size
-   * assign file state : file state에 값을 할당.
+   * assign file state 
    * @param e 
    * @returns 
    */
