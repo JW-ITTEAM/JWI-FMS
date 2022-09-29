@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
@@ -257,8 +258,15 @@ namespace FMS_API.Controllers
                 if (items.Count > 0)
 
                 {
+
+                    var FileDic = Path.Combine("Resources", "js");
+                    var uncodefilePath = Path.Combine(Directory.GetCurrentDirectory(), FileDic);
+
+                    if (!Directory.Exists(uncodefilePath))
+                        Directory.CreateDirectory(uncodefilePath);
+
                     //POrt Code file read
-                    string uncodefilePath = System.IO.Path.Combine(Environment.WebRootPath, "js");
+                    //string uncodefilePath = System.IO.Path.Combine(Environment.WebRootPath, "js");
                     string[] lines = System.IO.File.ReadAllLines(uncodefilePath + "\\" + "UNPORT.txt");
 
 
