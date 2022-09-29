@@ -5,9 +5,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
+using System.Xml;
 
 namespace FMS_API.Controllers
 {
@@ -27,6 +29,7 @@ namespace FMS_API.Controllers
                 //var file = Request.Form.Files[0];
                 var folderName = Path.Combine("Resources", "Test");
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                string callresult = "";
                 if (!Directory.Exists(pathToSave))
                     Directory.CreateDirectory(pathToSave);
 
@@ -63,7 +66,7 @@ namespace FMS_API.Controllers
                     {
                         //2. call GoFreight API
 
-                        CallgofreightAPI(fullPath);
+                        fileReturn.fileReturnMsg = CallgofreightAPI(fullPath);
                     }
                     else
                     {
@@ -224,7 +227,7 @@ namespace FMS_API.Controllers
         }
 
         //call GoFreight  api to make shipment with JSON
-        public static async void CallgofreightAPI(string filepath)
+        public string CallgofreightAPI(string filepath)
         {
             try
             {
@@ -233,7 +236,7 @@ namespace FMS_API.Controllers
                 List<OceanShipmentJSON> items = new List<OceanShipmentJSON>();
                 List<OceanContainer> oclist = new List<OceanContainer>();
 
-                StreamReader r = new StreamReader(filePath);
+                StreamReader r = new StreamReader(filepath);
                 string json = r.ReadToEnd();
 
                 var newjson = JObject.Parse(json).SelectToken("data").ToString();  //get rid of root
@@ -257,8 +260,15 @@ namespace FMS_API.Controllers
                 if (items.Count > 0)
 
                 {
+
+                    var FileDic = "Resources";
+                    var uncodefilePath = Path.Combine(Directory.GetCurrentDirectory(), FileDic);
+
+                    if (!Directory.Exists(uncodefilePath))
+                        Directory.CreateDirectory(uncodefilePath);
+
                     //POrt Code file read
-                    string uncodefilePath = System.IO.Path.Combine(Environment.WebRootPath, "js");
+                    //string uncodefilePath = System.IO.Path.Combine(Environment.WebRootPath, "js");
                     string[] lines = System.IO.File.ReadAllLines(uncodefilePath + "\\" + "UNPORT.txt");
 
 
@@ -496,10 +506,9 @@ namespace FMS_API.Controllers
 
 
 
-                    //file save
-
-                    var FileDicrectory = "EDIXMLFiles";
-                    string basePath = System.IO.Path.Combine(Environment.WebRootPath, FileDicrectory);
+                    //file save                    
+                    var FileDicrectory = Path.Combine("Resources", "EDIXMLFiles"); 
+                    string basePath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), FileDicrectory);
                     if (!Directory.Exists(basePath))
                     {
                         Directory.CreateDirectory(basePath);
@@ -511,10 +520,10 @@ namespace FMS_API.Controllers
 
 
                     //edi test API CAll
-                    //string url = "https://eval-edi.gofreight.co/edi/ocean-import-shipment/1/xml/";
-                    string url = "https://jwi.gofreight.co/edi/ocean-import-shipment/1/xml/";
-                    //string AUTHkeystring = new string("EdiAuthToken 10135633e0a122ea7e3f6cddb7aa4646d99516d6");
-                    string AUTHkeystring = new string("EdiAuthToken d2e52b5575732058ab59dedb81bcfc992fe3b801");
+                    string url = "https://eval-edi.gofreight.co/edi/ocean-import-shipment/1/xml/";
+                    //string url = "https://jwi.gofreight.co/edi/ocean-import-shipment/1/xml/";
+                    string AUTHkeystring = new string("EdiAuthToken 10135633e0a122ea7e3f6cddb7aa4646d99516d6");
+                    //string AUTHkeystring = new string("EdiAuthToken d2e52b5575732058ab59dedb81bcfc992fe3b801");
 
 
                     var request = (HttpWebRequest)WebRequest.Create(url);
@@ -538,7 +547,7 @@ namespace FMS_API.Controllers
                         xmlResultDoc.Load(response.GetResponseStream());
                         if (xmlResultDoc.SelectSingleNode("//EdiResponse/Result").InnerText == "SUCCESS")
                         {
-                            return "EDI File uploaded successfully";
+                           return "EDI File uploaded successfully";
                         }
                         else
                         {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace FMS_API.Models
+namespace Domain.Models
 {
     public class FileModel
     {

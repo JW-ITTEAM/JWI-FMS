@@ -1,4 +1,4 @@
-﻿namespace FMS_API.Models
+﻿namespace Domain.Models
 {
     public class OceanShipmentXML
     {
