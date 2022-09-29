@@ -227,7 +227,7 @@ namespace FMS_API.Controllers
         }
 
         //call GoFreight  api to make shipment with JSON
-        public string CallgofreightAPI(string filepath)
+        private string CallgofreightAPI(string filepath)
         {
             try
             {
