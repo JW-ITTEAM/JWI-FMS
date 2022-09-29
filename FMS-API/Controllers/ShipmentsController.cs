@@ -1,11 +1,11 @@
 ﻿using Application.Repositories;
 using AutoMapper;
 using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FMS_API.Controllers
 {
-    //[Authorize]
     public class ShipmentsController : BaseApiController
     {
         private readonly IMapper _mapper;

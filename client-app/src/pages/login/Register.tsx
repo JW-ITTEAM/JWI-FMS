@@ -45,6 +45,16 @@ function Register(props: RegisterProps) {
                 </div>
                 <div className="form-group">
                   <input
+                    type="text"
+                    className="form-control form-control-lg"
+                    placeholder="Username"
+                    name="username"
+                    value={loginStore.userRegisterProps.username}
+                    onChange={(e) => loginStore.onChangeProps(e, "register")}
+                  />
+                </div>
+                <div className="form-group">
+                  <input
                     type="password"
                     className="form-control form-control-lg"
                     id="exampleInputPassword1"

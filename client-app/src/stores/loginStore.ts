@@ -1,8 +1,11 @@
+import { onAuthStateChanged } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
 import { objectPrototype } from "mobx/dist/internal";
+import { LOGIN_URI } from "../config/UriConfig";
 import { CurrentUserProps } from "../models/CurrentUserProps";
 import { UserLoginProps } from "../models/UserLoginProps";
 import { UserRegisterProps } from "../models/UserRegisterProps";
+import firebaseConn, { auth } from "../utils/FireBaseManager";
 
 export default class LoginStore {
   userLoginProps: UserLoginProps = {
@@ -47,11 +50,27 @@ export default class LoginStore {
     }
   };
 
-  setCurrentUserProps = async (props: CurrentUserProps) => {
+  setCurrentUserProps = (props: CurrentUserProps) => {
     this.currentUserProps.f_UserEmail = props.f_UserEmail;
     this.currentUserProps.f_UserName = props.f_UserName;
     this.currentUserProps.f_Phone = props.f_Phone;
     this.currentUserProps.f_Fax = props.f_Fax;
     this.currentUserProps.f_EmailVerified = props.f_EmailVerified;
+  };
+
+  loadAuthState = async (returnToLogin: boolean = false) => {
+    await onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // console.log(user);
+        // console.log("ok");
+        firebaseConn.setCurrentUserProps(user, this);
+      } else {
+        // console.log("not login status");
+        localStorage.removeItem("Token");
+        if (returnToLogin) {
+          window.open(LOGIN_URI, "_self");
+        }
+      }
+    });
   };
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<T_USER>
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -27,13 +27,6 @@ namespace Persistence.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            //modelBuilder.Entity<IdentityUser>().ToTable("T_USER");            
-            //modelBuilder.Entity<IdentityRole>().ToTable("T_ROLE");
-            //modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("T_USERCLAIM");
-            //modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("T_ROLECLAIM");
-            //modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("T_USERLOGIN");
-            //modelBuilder.Entity<IdentityUserToken<string>>().ToTable("T_USERTOKEN");
 
             modelBuilder.Entity<T_CONTAINER>(opt =>
             {

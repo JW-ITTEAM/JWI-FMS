@@ -15,6 +15,10 @@ export default class CommonStore {
     if (value === true) {
       nProgress.inc();
     } else {
+      // console.log("testst");
+      // setTimeout(() => {
+      //   nProgress.done();
+      // }, 1000);
       nProgress.done();
     }
   };
@@ -39,6 +43,20 @@ export default class CommonStore {
           .querySelector(".page-body-wrapper")
           ?.classList.remove("full-page-wrapper");
       }
+    }
+  };
+
+  setFullPageForce = (value: boolean) => {
+    if (value === true) {
+      this.setFullLayout(true);
+      document
+        .querySelector(".page-body-wrapper")
+        ?.classList.add("full-page-wrapper");
+    } else {
+      this.setFullLayout(false);
+      document
+        .querySelector(".page-body-wrapper")
+        ?.classList.remove("full-page-wrapper");
     }
   };
 }

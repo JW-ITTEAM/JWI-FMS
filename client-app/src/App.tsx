@@ -1,20 +1,38 @@
 import { useLocation, withRouter } from "react-router-dom";
 import "./App.scss";
-import AppRoutes from "./AppRoutes";
+import { AppRoutes } from "./AppRoutes";
 import Footer from "./pages/shared/Footer";
 import Navbar from "./pages/shared/Navbar";
 import Sidebar from "./pages/shared/Sidebar";
 import "./assets/styles/css/nprogress.css";
 import { LoadSpinner } from "./components/loadSpinner/LoadSpinner";
 import { useStore } from "./stores/store";
+import { useEffect } from "react";
 
 function App() {
-  const { commonStore } = useStore();
+  const { commonStore, loginStore } = useStore();
   const location: any = useLocation();
   commonStore.fullPageControl(location.pathname);
 
-  let navbarComponent = !commonStore.isFullLayout ? <Navbar /> : "";
-  let sidebarComponent = !commonStore.isFullLayout ? <Sidebar /> : "";
+  useEffect(() => {
+    loginStore.loadAuthState();
+    // let timer1 = setTimeout(() => commonStore.setLoading(true), 5000);
+    // return () => {
+    //   clearTimeout(timer1);
+    //   commonStore.setLoading(false);
+    // };
+  }, []);
+
+  let navbarComponent = !commonStore.isFullLayout ? (
+    <Navbar userInfo={loginStore.currentUserProps} />
+  ) : (
+    ""
+  );
+  let sidebarComponent = !commonStore.isFullLayout ? (
+    <Sidebar userInfo={loginStore.currentUserProps} />
+  ) : (
+    ""
+  );
   let footerComponent = !commonStore.isFullLayout ? <Footer /> : "";
 
   return (

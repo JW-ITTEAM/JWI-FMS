@@ -1,8 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import AuthRoute from "./components/routeHelper/AuthRoute";
-
-export interface IAppRoutesProps {}
+import RouteIf from "./components/routeHelper/RouteIf";
+import { logChk } from "./utils/CommonUtil";
 
 const OceanImport = lazy(() => import("./pages/shipments/oim/OceanImport"));
 const OceanImportDetail = lazy(
@@ -24,40 +23,39 @@ const Register = lazy(() => import("./pages/login/Register"));
 const EmailConfirm = lazy(() => import("./pages/login/EmailConfirm"));
 
 //EYJ
-const FileUpload = lazy(()=> import("./pages/fileDrop/FileUploadPage"));
+const FileUpload = lazy(() => import("./pages/fileDrop/FileUploadPage"));
+const IsLogin = logChk(localStorage);
 
-const Token = localStorage.getItem("Token");
-const IsLogin = !!Token;
-console.log("IsLogin : " + IsLogin);
-console.log("Token : " + Token);
+export interface IAppRoutesProps {}
 
-export default class AppRoutes extends React.Component<IAppRoutesProps> {
+export class AppRoutes extends React.Component<IAppRoutesProps> {
   public render() {
     return (
       <Suspense>
         <Switch>
-          <Route exact path="/shipments/oim" component={OceanImport} />
-          <Route path="/shipments/oim_detail/" component={OceanImportDetail} />
-          <Route path="/shipments/oex" component={OceanExport} />
-          <Route path="/shipments/aim" component={AirImport} />
-          <Route path="/shipments/aex" component={AirExport} />
-          <Route exact path="/dashboard" component={Dashboard} />
-          <Route
+          <RouteIf path="/dashboard" component={Dashboard} />
+          <RouteIf exact path="/shipments/oim" component={OceanImport} />
+          <RouteIf
+            path="/shipments/oim_detail/"
+            component={OceanImportDetail}
+          />
+          <RouteIf path="/shipments/oex" component={OceanExport} />
+          <RouteIf path="/shipments/aim" component={AirImport} />
+          <RouteIf path="/shipments/aex" component={AirExport} />
+          <RouteIf
             exact
             path="/shipments/intg_board"
             component={ShipmentIntgBoard}
           />
-          <Route
+          <RouteIf
             path="/shipments/intg_ocean_detail"
             component={ShipmentIntgBoardOceanDetail}
           />
-          <Route path="/tables/basic-table" component={BasicTable} />
+          <RouteIf path="/tables/basic-table" component={BasicTable} />
+          <RouteIf path="/emailconfirm" component={EmailConfirm} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
-          <Route path="/emailconfirm" component={EmailConfirm} />
           <Route exact path="/fileDrop/file_upload/" component={FileUpload} />
-          <AuthRoute path="/test" authenticated={false} component={Dashboard} />
-          <Redirect to="/dashboard" />
           {IsLogin ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
         </Switch>
       </Suspense>

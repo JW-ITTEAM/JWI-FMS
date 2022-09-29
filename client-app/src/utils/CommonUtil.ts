@@ -13,3 +13,12 @@ export const validationEmail = (email: string) => {
     return true;
   }
 };
+
+export const getToken = (localStorage: any) => {
+  let token = localStorage.getItem("Token");
+  return token;
+};
+
+export const logChk = (localStorage: any) => {
+  return !!getToken(localStorage);
+};

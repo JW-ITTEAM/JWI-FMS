@@ -1,4 +1,5 @@
 import * as React from "react";
+import firebaseConn from "../../utils/FireBaseManager";
 
 export interface IDashboardProps {}
 

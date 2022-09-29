@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import "./App.scss";
-import AppRoutes from "./AppRoutes";
+import { AppRoutes } from "./AppRoutes";
 import Footer from "./pages/shared/Footer";
 import Navbar from "./pages/shared/Navbar";
 import Sidebar from "./pages/shared/Sidebar";

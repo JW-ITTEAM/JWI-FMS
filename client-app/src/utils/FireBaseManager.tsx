@@ -7,6 +7,9 @@ import {
   sendEmailVerification,
   createUserWithEmailAndPassword,
   User,
+  updateProfile,
+  onAuthStateChanged,
+  signOut,
 } from "firebase/auth";
 import { isNull } from "lodash";
 import {
@@ -18,7 +21,11 @@ import { MsgManager } from "./MsgManager";
 import LoginStore from "./../stores/loginStore";
 import { CurrentUserProps } from "../models/CurrentUserProps";
 import nProgress from "nprogress";
-import { DASHBOARD_URI, EMAILCONFIRM_URI } from "../config/UriConfig";
+import {
+  DASHBOARD_URI,
+  EMAILCONFIRM_URI,
+  LOGIN_URI,
+} from "../config/UriConfig";
 
 // Declare Obj
 const firebaseApp = initializeApp({
@@ -38,12 +45,12 @@ const actionCodeSettings = {
 // Declare Obj
 
 // Google Login
-const signInGoogleEmail = async (loginStore: LoginStore) => {
+const signInGoogleEmail = async () => {
   const userCredential = await signInWithPopup(auth, provider)
     .then(async (result) => {
       console.log("success");
       let user = auth.currentUser;
-      await loginOperationProcess(user, loginStore);
+      await loginOperationProcess(user);
       return result;
     })
     .catch((error) => {
@@ -59,11 +66,12 @@ const signInGoogleEmail = async (loginStore: LoginStore) => {
 // Email Password Login and Create Account
 const signUpEmail = async (loginStore: LoginStore) => {
   let email = loginStore.userRegisterProps.email;
+  let username = loginStore.userRegisterProps.username;
   let password = loginStore.userRegisterProps.password;
   let passwordconfirm = loginStore.userRegisterProps.passwordconfirm;
   let chkagree = loginStore.userRegisterProps.chkagree;
 
-  if (loginValidCheck(email, password, passwordconfirm, chkagree)) {
+  if (loginValidCheck(email, password, passwordconfirm, username, chkagree)) {
     MsgManager({
       defaultConfirm: true,
     }).then(async (result) => {
@@ -77,7 +85,8 @@ const signUpEmail = async (loginStore: LoginStore) => {
             let user = auth.currentUser;
             if (user !== null) {
               await emailVerification(user);
-              await loginOperationProcess(user, loginStore);
+              await userUpdateInfo(user, loginStore);
+              await loginOperationProcess(user);
             } else {
               MsgManager({
                 icon: "error",
@@ -132,7 +141,7 @@ const loginEmail = async (loginStore: LoginStore) => {
     )
       .then(async (result) => {
         const user = result.user;
-        await loginOperationProcess(user, loginStore);
+        await loginOperationProcess(user);
         nProgress.done();
       })
       .catch((error) => {
@@ -145,6 +154,21 @@ const loginEmail = async (loginStore: LoginStore) => {
     return userCredential;
   }
 };
+
+const logOut = async () => {
+  signOut(auth)
+    .then(() => {
+      localStorage.removeItem("Token");
+      window.open(LOGIN_URI, "_self");
+    })
+    .catch((error) => {
+      nProgress.done();
+      MsgManager({
+        error: error,
+      });
+      return;
+    });
+};
 // Email Password Login
 
 // Util
@@ -152,10 +176,12 @@ const loginValidCheck = (
   email: string,
   password: string,
   passwordconfirm: string | null = null,
+  username: string | null = null,
   chkagree: boolean | null = null
 ) => {
   const emptyEmail = stringIsNullOrEmpty(email);
   const notValidEmail = !validationEmail(email);
+  const emptyUsername = !isNull(username) && stringIsNullOrEmpty(username);
   const emptyPassword = stringIsNullOrEmpty(password);
   const emptyPasswordConfirm =
     !isNull(passwordconfirm) && stringIsNullOrEmpty(passwordconfirm);
@@ -164,14 +190,13 @@ const loginValidCheck = (
     !emptyPassword &&
     !emptyPasswordConfirm &&
     password !== passwordconfirm;
-  const emptyBoth = emptyEmail && emptyPassword;
   const emptyAgree = chkagree === false;
 
-  if (emptyBoth) {
+  if (emptyUsername) {
     MsgManager({
       icon: "error",
       title: "Validation error",
-      text: "Please input email and password.",
+      text: "Please input username.",
     });
     return false;
   } else if (emptyEmail) {
@@ -220,34 +245,43 @@ const loginValidCheck = (
   return true;
 };
 
-const setCurrentUserProps = async (user: any, loginStore: LoginStore) => {
+const setCurrentUserProps = (user: any, loginStore: LoginStore) => {
   const currentUserProps: CurrentUserProps = {
-    f_UserName: user.displayName ?? "",
-    f_UserEmail: user.email ?? "",
-    f_Phone: user.phoneNumber ?? "",
+    f_UserName: user?.displayName ?? "",
+    f_UserEmail: user?.email ?? "",
+    f_Phone: user?.phoneNumber ?? "",
     f_Fax: "",
-    f_EmailVerified: user.emailVerified,
+    f_EmailVerified: user?.emailVerified ?? false,
   };
-  await loginStore.setCurrentUserProps(currentUserProps);
+  loginStore.setCurrentUserProps(currentUserProps);
 };
 
-const loginOperationProcess = async (user: any, loginStore: LoginStore) => {
-  await setCurrentUserProps(user, loginStore);
+const userUpdateInfo = async (user: any, loginStore: LoginStore) => {
+  await updateProfile(user, {
+    displayName: loginStore.userRegisterProps.username.toUpperCase(),
+  });
+};
+
+const loginOperationProcess = async (user: any) => {
   // localstorage save token information.
   localStorage.setItem("Token", user.accessToken);
-  if (!user.emailVerified) {
-    window.open(EMAILCONFIRM_URI, "_self");
-    return;
+  let dev = false;
+  if (dev) {
+    console.log(user);
+  } else {
+    if (!user.emailVerified) {
+      window.open(EMAILCONFIRM_URI, "_self");
+      return;
+    }
+    window.open(DASHBOARD_URI, "_self");
   }
-  window.open(DASHBOARD_URI, "_self");
-  // console.log(user);
 };
 
 const getCurrentUser = () => {
   let user = auth.currentUser;
-  // if (user === null) {
-  //   window.open(DASHBOARD_URI, "_self");
-  // }
+  // // if (user === null) {
+  // //   window.open(DASHBOARD_URI, "_self");
+  // // }
   return user;
 };
 // Util
@@ -258,6 +292,8 @@ export const firebaseConn = {
   signInGoogleEmail,
   emailVerification,
   getCurrentUser,
+  setCurrentUserProps,
+  logOut,
 };
 
 export default firebaseConn;

@@ -1,341 +1,367 @@
-import React, { Component } from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { Collapse, Dropdown } from "react-bootstrap";
 import { mdiChevronDown, mdiCog } from "@mdi/js";
 import Icon from "@mdi/react";
+import { observer } from "mobx-react-lite";
+import { useState } from "react";
+import { CurrentUserProps } from "../../models/CurrentUserProps";
 
-class Sidebar extends Component<RouteComponentProps> {
-  state: any = {};
+export interface ISidebar_Props extends RouteComponentProps {
+  userInfo?: CurrentUserProps;
+}
 
-  toggleMenuState(menuState: string) {
-    if (this.state[menuState]) {
-      this.setState({
+function Sidebar(props: ISidebar_Props) {
+  //   const state: any = {};
+  const [mState, setMstate]: any = useState({});
+
+  //   const toggleMenuState = (menuState: string) => {
+  //     if (state[menuState]) {
+  //       setState({
+  //         [menuState]: false,
+  //       });
+  //     } else if (Object.keys(state).length === 0) {
+  //       setState({ [menuState]: true });
+  //     } else {
+  //       Object.keys(state).forEach((i) => {
+  //         setState({ [i]: false });
+  //       });
+  //       setState({ [menuState]: true });
+  //     }
+  //     };
+
+  const toggleMenuState = (menuState: string) => {
+    if (mState[menuState]) {
+      setMstate({
         [menuState]: false,
       });
-    } else if (Object.keys(this.state).length === 0) {
-      this.setState({ [menuState]: true });
+    } else if (Object.keys(mState).length === 0) {
+      setMstate({ [menuState]: true });
     } else {
-      Object.keys(this.state).forEach((i) => {
-        this.setState({ [i]: false });
+      Object.keys(mState).map((i) => {
+        setMstate({ [i]: false });
       });
-      this.setState({ [menuState]: true });
+      setMstate({ [menuState]: true });
     }
-  }
+  };
 
-  render() {
-    return (
-      <nav className="sidebar sidebar-offcanvas" id="sidebar">
-        {/* Main Logo in Sidebar */}
-        <div className="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-          <a className="sidebar-brand brand-logo" href="index.html">
-            <img
-              src={require("./../../assets/images/logo_image/logo-90degree.png")}
-              alt="logo"
-            />
-          </a>
-          <a className="sidebar-brand brand-logo-mini" href="index.html">
-            <img
-              src={require("./../../assets/images/logo_image/J_Logo.png")}
-              alt="logo"
-            />
-          </a>
-        </div>
-        {/* Main Logo in Sidebar */}
+  // navagation class control - active
+  const isPathActive = (path: string) => {
+    return props.location.pathname.startsWith(path);
+  };
 
-        <ul className="nav">
-          {/* Profile */}
-          <li className="nav-item profile">
-            <div className="profile-desc">
-              <div className="profile-pic">
-                <div className="count-indicator">
-                  <img
-                    className="img-xs rounded-circle"
-                    src={require("../../assets/images/faces/face15.jpg")}
-                    alt="profile"
-                  />
-                  <span className="count bg-success"></span>
-                </div>
-                <div className="profile-name">
-                  <h5 className="mb-0 font-weight-normal">Henry Klein</h5>
-                  <span>Gold Member</span>
-                </div>
+  return (
+    <nav className="sidebar sidebar-offcanvas" id="sidebar">
+      {/* Main Logo in Sidebar */}
+      <div className="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+        <a className="sidebar-brand brand-logo" href="index.html">
+          <img
+            src={require("./../../assets/images/logo_image/logo-90degree.png")}
+            alt="logo"
+          />
+        </a>
+        <a className="sidebar-brand brand-logo-mini" href="index.html">
+          <img
+            src={require("./../../assets/images/logo_image/J_Logo.png")}
+            alt="logo"
+          />
+        </a>
+      </div>
+      {/* Main Logo in Sidebar */}
+
+      <ul className="nav">
+        {/* Profile */}
+        <li className="nav-item profile">
+          <div className="profile-desc">
+            <div className="profile-pic">
+              <div className="count-indicator">
+                <img
+                  className="img-xs rounded-circle"
+                  src={require("../../assets/images/faces/face15.jpg")}
+                  alt="profile"
+                />
+                <span className="count bg-success"></span>
               </div>
-              <Dropdown alignRight>
-                <Dropdown.Toggle as="a" className="cursor-pointer no-caret">
-                  <i className="mdi mdi-dots-vertical"></i>
-                </Dropdown.Toggle>
-                <Dropdown.Menu className="sidebar-dropdown preview-list">
-                  <a
-                    href="!#"
-                    className="dropdown-item preview-item"
-                    onClick={(evt) => evt.preventDefault()}
-                  >
-                    <div className="preview-thumbnail">
-                      <div className="preview-icon bg-dark rounded-circle">
-                        <Icon
-                          path={mdiCog}
-                          size={0.7}
-                          className="mdi mdi-settings text-primary"
-                        ></Icon>
-                      </div>
-                    </div>
-                    <div className="preview-item-content">
-                      <p className="preview-subject ellipsis mb-1 text-small">
-                        Account settings
-                      </p>
-                    </div>
-                  </a>
-                  <div className="dropdown-divider"></div>
-                  <a
-                    href="!#"
-                    className="dropdown-item preview-item"
-                    onClick={(evt) => evt.preventDefault()}
-                  >
-                    <div className="preview-thumbnail">
-                      <div className="preview-icon bg-dark rounded-circle">
-                        <i className="mdi mdi-onepassword text-info"></i>
-                      </div>
-                    </div>
-                    <div className="preview-item-content">
-                      <p className="preview-subject ellipsis mb-1 text-small">
-                        Change Password
-                      </p>
-                    </div>
-                  </a>
-                  <div className="dropdown-divider"></div>
-                  <a
-                    href="!#"
-                    className="dropdown-item preview-item"
-                    onClick={(evt) => evt.preventDefault()}
-                  >
-                    <div className="preview-thumbnail">
-                      <div className="preview-icon bg-dark rounded-circle">
-                        <i className="mdi mdi-calendar-today text-success"></i>
-                      </div>
-                    </div>
-                    <div className="preview-item-content">
-                      <p className="preview-subject ellipsis mb-1 text-small">
-                        To-do list
-                      </p>
-                    </div>
-                  </a>
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-          </li>
-          {/* Profile */}
-
-          {/* Navigation Menu */}
-          <li className="nav-item nav-category">
-            <span className="nav-link">Navigation</span>
-          </li>
-
-          {/* Dashboard */}
-          <li
-            className={
-              this.isPathActive("/dashboard")
-                ? "nav-item menu-items active"
-                : "nav-item menu-items"
-            }
-          >
-            <Link className="nav-link" to="/dashboard">
-              <span className="menu-icon">
-                <i className="mdi mdi-speedometer"></i>
-              </span>
-              <span className="menu-title">Dashboard</span>
-            </Link>
-          </li>
-          {/* Dashboard */}
-
-          {/* Shipment */}
-          <li
-            className={
-              this.isPathActive("/shipments/intg_board/")
-                ? "nav-item menu-items active"
-                : "nav-item menu-items"
-            }
-          >
-            <Link className="nav-link" to="/shipments/intg_board/">
-              <span className="menu-icon">
-                <i className="mdi mdi-ferry"></i>
-              </span>
-              <span className="menu-title">Shipments</span>
-            </Link>
-          </li>
-          {/* Shipment */}
-
-          {/* Ocean Import */}
-          {/* <li
-            className={
-              this.isPathActive("/shipments")
-                ? "nav-item menu-items active"
-                : "nav-item menu-items"
-            }
-          >
-            <div
-              className={
-                this.state.basicUiMenuOpen
-                  ? "nav-link menu-expanded"
-                  : "nav-link"
-              }
-              onClick={() => this.toggleMenuState("basicUiMenuOpen")}
-              data-toggle="collapse"
-            >
-              <span className="menu-icon">
-                <i className="mdi mdi-ferry"></i>
-              </span>
-              <span className="menu-title">Shipments</span>
-              <Icon
-                path={mdiChevronDown}
-                title="menu-arrow"
-                size={0.7}
-                className="menu-arrow"
-              ></Icon>
-            </div>
-            <Collapse in={this.state.basicUiMenuOpen}>
-              <div>
-                <ul className="nav flex-column sub-menu">
-                  <li className="nav-item">
-                    <Link
-                      className={
-                        this.isPathActive("/shipments/oim")
-                          ? "nav-link active"
-                          : "nav-link"
-                      }
-                      to="/shipments/oim"
-                    >
-                      Ocean Import
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link
-                      className={
-                        this.isPathActive("/shipments/oex")
-                          ? "nav-link active"
-                          : "nav-link"
-                      }
-                      to="/shipments/oex"
-                    >
-                      Ocean Export
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link
-                      className={
-                        this.isPathActive("/shipments/aim")
-                          ? "nav-link active"
-                          : "nav-link"
-                      }
-                      to="/shipments/aim"
-                    >
-                      Air Import
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link
-                      className={
-                        this.isPathActive("/shipments/aex")
-                          ? "nav-link active"
-                          : "nav-link"
-                      }
-                      to="/shipments/aex"
-                    >
-                      Air Export
-                    </Link>
-                  </li>
-                </ul>
+              <div className="profile-name">
+                <h5 className="mb-0 font-weight-normal">
+                  {props.userInfo?.f_UserName}
+                </h5>
+                <span>Gold Member</span>
               </div>
-            </Collapse>
-          </li> */}
-          {/* Shipments */}
+            </div>
+            <Dropdown alignRight>
+              <Dropdown.Toggle as="a" className="cursor-pointer no-caret">
+                <i className="mdi mdi-dots-vertical"></i>
+              </Dropdown.Toggle>
+              <Dropdown.Menu className="sidebar-dropdown preview-list">
+                <a
+                  href="!#"
+                  className="dropdown-item preview-item"
+                  onClick={(evt) => evt.preventDefault()}
+                >
+                  <div className="preview-thumbnail">
+                    <div className="preview-icon bg-dark rounded-circle">
+                      <Icon
+                        path={mdiCog}
+                        size={0.7}
+                        className="mdi mdi-settings text-primary"
+                      ></Icon>
+                    </div>
+                  </div>
+                  <div className="preview-item-content">
+                    <p className="preview-subject ellipsis mb-1 text-small">
+                      Account settings
+                    </p>
+                  </div>
+                </a>
+                <div className="dropdown-divider"></div>
+                <a
+                  href="!#"
+                  className="dropdown-item preview-item"
+                  onClick={(evt) => evt.preventDefault()}
+                >
+                  <div className="preview-thumbnail">
+                    <div className="preview-icon bg-dark rounded-circle">
+                      <i className="mdi mdi-onepassword text-info"></i>
+                    </div>
+                  </div>
+                  <div className="preview-item-content">
+                    <p className="preview-subject ellipsis mb-1 text-small">
+                      Change Password
+                    </p>
+                  </div>
+                </a>
+                <div className="dropdown-divider"></div>
+                <a
+                  href="!#"
+                  className="dropdown-item preview-item"
+                  onClick={(evt) => evt.preventDefault()}
+                >
+                  <div className="preview-thumbnail">
+                    <div className="preview-icon bg-dark rounded-circle">
+                      <i className="mdi mdi-calendar-today text-success"></i>
+                    </div>
+                  </div>
+                  <div className="preview-item-content">
+                    <p className="preview-subject ellipsis mb-1 text-small">
+                      To-do list
+                    </p>
+                  </div>
+                </a>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        </li>
+        {/* Profile */}
 
-          {/* Billing & Invoice */}
-          <li
-            className={
-              this.isPathActive("/invoice")
-                ? "nav-item menu-items active"
-                : "nav-item menu-items"
-            }
-          >
-            <Link className="nav-link" to="/invoice">
-              <span className="menu-icon">
-                <i className="mdi mdi-receipt-text"></i>
-              </span>
-              <span className="menu-title">Billing & Invoice</span>
-            </Link>
-          </li>
-          {/* Billing & Invoice */}
+        {/* Navigation Menu */}
+        <li className="nav-item nav-category">
+          <span className="nav-link">Navigation</span>
+        </li>
 
-          {/* Arrival */}
-          <li
-            className={
-              this.isPathActive("/arrival")
-                ? "nav-item menu-items active"
-                : "nav-item menu-items"
-            }
-          >
-            <Link className="nav-link" to="/arrival">
-              <span className="menu-icon">
-                <i className="mdi mdi-calendar-multiple-check"></i>
-              </span>
-              <span className="menu-title">Arrival</span>
-            </Link>
-          </li>
-          {/* Arrival */}
+        {/* Dashboard */}
+        <li
+          className={
+            isPathActive("/dashboard")
+              ? "nav-item menu-items active"
+              : "nav-item menu-items"
+          }
+        >
+          <Link className="nav-link" to="/dashboard">
+            <span className="menu-icon">
+              <i className="mdi mdi-speedometer"></i>
+            </span>
+            <span className="menu-title">Dashboard</span>
+          </Link>
+        </li>
+        {/* Dashboard */}
 
-          {/* Trucking */}
-          <li
-            className={
-              this.isPathActive("/trucking")
-                ? "nav-item menu-items active"
-                : "nav-item menu-items"
-            }
-          >
-            <Link className="nav-link" to="/trucking">
-              <span className="menu-icon">
-                <i className="mdi mdi-truck"></i>
-              </span>
-              <span className="menu-title">Trucking</span>
-            </Link>
-          </li>
-          {/* Trucking */}
+        {/* Shipment */}
+        <li
+          className={
+            isPathActive("/shipments/intg_board/")
+              ? "nav-item menu-items active"
+              : "nav-item menu-items"
+          }
+        >
+          <Link className="nav-link" to="/shipments/intg_board/">
+            <span className="menu-icon">
+              <i className="mdi mdi-ferry"></i>
+            </span>
+            <span className="menu-title">Shipments</span>
+          </Link>
+        </li>
+        {/* Shipment */}
 
-          {/* Admin */}
-          <li
+        {/* Ocean Import */}
+        {/* <li
+          className={
+            isPathActive("/shipments")
+              ? "nav-item menu-items active"
+              : "nav-item menu-items"
+          }
+        >
+          <div
             className={
-              this.isPathActive("/admin")
-                ? "nav-item menu-items active"
-                : "nav-item menu-items"
+              mState.basicUiMenuOpen ? "nav-link menu-expanded" : "nav-link"
             }
+            onClick={() => toggleMenuState("basicUiMenuOpen")}
+            data-toggle="collapse"
           >
-            <Link className="nav-link" to="/admin">
-              <span className="menu-icon">
-                <i className="mdi mdi-cog"></i>
-              </span>
-              <span className="menu-title">Admin</span>
-            </Link>
-          </li>
-          {/* Admin */}
-           
-          {/* FileDrop  by EYJ*/}
-          <li
-            className={
-              this.isPathActive("/fileDrop/file_upload/")
-                ? "nav-item menu-items active"
-                : "nav-item menu-items"
-            }
-          >
-            <Link className="nav-link" to="/fileDrop/file_upload/">
-              <span className="menu-icon">
-                <i className="mdi mdi-ferry"></i>
-              </span>
-              <span className="menu-title">File Drop</span>
-            </Link>
-          </li>
-          {/* File Upload  by EYJ*/}
+            <span className="menu-icon">
+              <i className="mdi mdi-ferry"></i>
+            </span>
+            <span className="menu-title">Shipments</span>
+            <Icon
+              path={mdiChevronDown}
+              title="menu-arrow"
+              size={0.7}
+              className="menu-arrow"
+            ></Icon>
+          </div>
+          <Collapse in={mState.basicUiMenuOpen}>
+            <div>
+              <ul className="nav flex-column sub-menu">
+                <li className="nav-item">
+                  <Link
+                    className={
+                      isPathActive("/shipments/oim")
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                    to="/shipments/oim"
+                  >
+                    Ocean Import
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    className={
+                      isPathActive("/shipments/oex")
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                    to="/shipments/oex"
+                  >
+                    Ocean Export
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    className={
+                      isPathActive("/shipments/aim")
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                    to="/shipments/aim"
+                  >
+                    Air Import
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    className={
+                      isPathActive("/shipments/aex")
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                    to="/shipments/aex"
+                  >
+                    Air Export
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </Collapse>
+        </li> */}
+        {/* Shipments */}
 
-          {/* Basic Ui Element */}
-          {/* <li
+        {/* Billing & Invoice */}
+        <li
+          className={
+            isPathActive("/invoice")
+              ? "nav-item menu-items active"
+              : "nav-item menu-items"
+          }
+        >
+          <Link className="nav-link" to="/invoice">
+            <span className="menu-icon">
+              <i className="mdi mdi-receipt-text"></i>
+            </span>
+            <span className="menu-title">Billing & Invoice</span>
+          </Link>
+        </li>
+        {/* Billing & Invoice */}
+
+        {/* Arrival */}
+        <li
+          className={
+            isPathActive("/arrival")
+              ? "nav-item menu-items active"
+              : "nav-item menu-items"
+          }
+        >
+          <Link className="nav-link" to="/arrival">
+            <span className="menu-icon">
+              <i className="mdi mdi-calendar-multiple-check"></i>
+            </span>
+            <span className="menu-title">Arrival</span>
+          </Link>
+        </li>
+        {/* Arrival */}
+
+        {/* Trucking */}
+        <li
+          className={
+            isPathActive("/trucking")
+              ? "nav-item menu-items active"
+              : "nav-item menu-items"
+          }
+        >
+          <Link className="nav-link" to="/trucking">
+            <span className="menu-icon">
+              <i className="mdi mdi-truck"></i>
+            </span>
+            <span className="menu-title">Trucking</span>
+          </Link>
+        </li>
+        {/* Trucking */}
+
+        {/* Admin */}
+        <li
+          className={
+            isPathActive("/admin")
+              ? "nav-item menu-items active"
+              : "nav-item menu-items"
+          }
+        >
+          <Link className="nav-link" to="/admin">
+            <span className="menu-icon">
+              <i className="mdi mdi-cog"></i>
+            </span>
+            <span className="menu-title">Admin</span>
+          </Link>
+        </li>
+        {/* Admin */}
+
+        {/* FileDrop  by EYJ*/}
+        <li
+          className={
+            isPathActive("/fileDrop/file_upload/")
+              ? "nav-item menu-items active"
+              : "nav-item menu-items"
+          }
+        >
+          <Link className="nav-link" to="/fileDrop/file_upload/">
+            <span className="menu-icon">
+              <i className="mdi mdi-ferry"></i>
+            </span>
+            <span className="menu-title">File Drop</span>
+          </Link>
+        </li>
+        {/* File Upload  by EYJ*/}
+
+        {/* Basic Ui Element */}
+        {/* <li
             className={
               this.isPathActive("/basic-ui")
                 ? "nav-item menu-items active"
@@ -405,10 +431,10 @@ class Sidebar extends Component<RouteComponentProps> {
               </div>
             </Collapse>
           </li> */}
-          {/* Basic Ui Element */}
+        {/* Basic Ui Element */}
 
-          {/* Form Elements */}
-          {/* <li
+        {/* Form Elements */}
+        {/* <li
             className={
               this.isPathActive("/form-elements")
                 ? "nav-item menu-items active"
@@ -454,10 +480,10 @@ class Sidebar extends Component<RouteComponentProps> {
               </div>
             </Collapse>
           </li> */}
-          {/* Form Elements */}
+        {/* Form Elements */}
 
-          {/* Tables */}
-          {/* <li
+        {/* Tables */}
+        {/* <li
             className={
               this.isPathActive("/tables")
                 ? "nav-item menu-items active"
@@ -503,10 +529,10 @@ class Sidebar extends Component<RouteComponentProps> {
               </div>
             </Collapse>
           </li> */}
-          {/* Tables */}
+        {/* Tables */}
 
-          {/* Charts */}
-          {/* <li
+        {/* Charts */}
+        {/* <li
             className={
               this.isPathActive("/charts")
                 ? "nav-item menu-items active"
@@ -552,10 +578,10 @@ class Sidebar extends Component<RouteComponentProps> {
               </div>
             </Collapse>
           </li> */}
-          {/* Charts */}
+        {/* Charts */}
 
-          {/* Icons */}
-          {/* <li
+        {/* Icons */}
+        {/* <li
             className={
               this.isPathActive("/icons")
                 ? "nav-item menu-items active"
@@ -599,10 +625,10 @@ class Sidebar extends Component<RouteComponentProps> {
               </div>
             </Collapse>
           </li> */}
-          {/* Icons */}
+        {/* Icons */}
 
-          {/* User Pages */}
-          {/* <li
+        {/* User Pages */}
+        {/* <li
             className={
               this.isPathActive("/user-pages")
                 ? "nav-item menu-items active"
@@ -660,16 +686,16 @@ class Sidebar extends Component<RouteComponentProps> {
               </div>
             </Collapse>
           </li> */}
-          {/* User Pages */}
-          {/* Navigation Menu */}
+        {/* User Pages */}
+        {/* Navigation Menu */}
 
-          {/* More Menu */}
-          {/* <li className="nav-item nav-category">
+        {/* More Menu */}
+        {/* <li className="nav-item nav-category">
             <span className="nav-link">More</span>
           </li> */}
 
-          {/* Error Pages */}
-          {/* <li
+        {/* Error Pages */}
+        {/* <li
             className={
               this.isPathActive("/error-pages")
                 ? "nav-item menu-items active"
@@ -727,10 +753,10 @@ class Sidebar extends Component<RouteComponentProps> {
               </div>
             </Collapse>
           </li> */}
-          {/* Error Pages */}
+        {/* Error Pages */}
 
-          {/* Documentation */}
-          {/* <li className="nav-item menu-items">
+        {/* Documentation */}
+        {/* <li className="nav-item menu-items">
             <a
               className="nav-link"
               href="http://bootstrapdash.com/demo/corona-react-free/documentation/documentation.html"
@@ -743,17 +769,11 @@ class Sidebar extends Component<RouteComponentProps> {
               <span className="menu-title">Documentation</span>
             </a>
           </li> */}
-          {/* Documentation */}
-          {/* More Menu */}
-        </ul>
-      </nav>
-    );
-  }
-
-  // navagation class control - active
-  isPathActive(path: string) {
-    return this.props.location.pathname.startsWith(path);
-  }
+        {/* Documentation */}
+        {/* More Menu */}
+      </ul>
+    </nav>
+  );
 }
-
-export default withRouter(Sidebar);
+export default withRouter(observer(Sidebar));
+// export default observer(Sidebar);

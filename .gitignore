@@ -5,6 +5,7 @@
 
 
 appsettings.json
+firebase-config.json
 
 # dependencies
 **/node_modules

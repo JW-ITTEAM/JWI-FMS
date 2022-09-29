@@ -41,5 +41,6 @@ const loader_css: React.CSSProperties = {
   justifyContent: "center",
   zIndex: 1031,
   background: "rgba(255,255,255,0.7)",
-  animation: "bg 1s",
+  // animation: "bg 1s",
+  animation: "fadeIn 0.5s",
 };

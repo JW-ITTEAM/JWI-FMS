@@ -1,16 +1,14 @@
 import { observer } from "mobx-react-lite";
 import { Button, Form } from "react-bootstrap";
-import { Link, useHistory, useLocation, withRouter } from "react-router-dom";
+import { Link, useLocation, withRouter } from "react-router-dom";
 import { useStore } from "../../stores/store";
 import firebaseConn from "../../utils/FireBaseManager";
 
 export interface LoginProps {}
 
 function Login(props: LoginProps) {
-  const history: any = useHistory();
-  const location: any = useLocation();
   const { commonStore, loginStore } = useStore();
-  commonStore.fullPageControl(location.pathname);
+  commonStore.setFullPageForce(true);
 
   const signInSubmit = async (event: any) => {
     event.preventDefault();
@@ -19,7 +17,7 @@ function Login(props: LoginProps) {
 
   const signInGoogleEmail = async (event: any) => {
     event.preventDefault();
-    await firebaseConn.signInGoogleEmail(loginStore);
+    await firebaseConn.signInGoogleEmail();
   };
 
   return (

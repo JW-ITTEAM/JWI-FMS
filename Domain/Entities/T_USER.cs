@@ -2,7 +2,7 @@
 
 namespace Domain.Entities
 {
-    public class T_USER : IdentityUser
+    public class T_USER
     {
         //public int F_ID { get; set; }
         public string F_UserId { get; set; }
