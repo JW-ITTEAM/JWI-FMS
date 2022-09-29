@@ -1,4 +1,4 @@
-﻿namespace FileExtract.Models
+﻿namespace FMS_API.Models
 {
     public class OceanShipmentJSON
     {
