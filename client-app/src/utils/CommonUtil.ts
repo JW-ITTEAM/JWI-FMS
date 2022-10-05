@@ -22,3 +22,12 @@ export const getToken = (localStorage: any) => {
 export const logChk = (localStorage: any) => {
   return !!getToken(localStorage);
 };
+
+export const userDbSave = (localStorage: any) => {
+  let userDbSave = localStorage.getItem("UserDbSave");
+  return userDbSave;
+};
+
+export const userDbSaveChk = (localStorage: any) => {
+  return !!userDbSave(localStorage);
+};

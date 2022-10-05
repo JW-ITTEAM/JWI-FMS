@@ -18,6 +18,10 @@ export default class LoginStore {
     username: "",
     password: "",
     passwordconfirm: "",
+    phone: "",
+    fax: "",
+    companyname: "",
+    dept: "",
     chkagree: false,
   };
 
@@ -56,6 +60,12 @@ export default class LoginStore {
     this.currentUserProps.f_Phone = props.f_Phone;
     this.currentUserProps.f_Fax = props.f_Fax;
     this.currentUserProps.f_EmailVerified = props.f_EmailVerified;
+  };
+
+  setUserRegisterProp = (key: any, value: any) => {
+    type typeOfObjKey = keyof typeof objectPrototype;
+    let name: typeOfObjKey = key;
+    this.userRegisterProps[name] = value;
   };
 
   loadAuthState = async (returnToLogin: boolean = false) => {

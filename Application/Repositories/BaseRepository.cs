@@ -7,16 +7,19 @@ namespace Application.Repositories
     public interface IRepository<TEntity> where TEntity : class
     {
         void Delete(TEntity entityToDelete);
-        void Delete(object id);
-        IEnumerable<TEntity> Get(
+        Task DeleteAsync(object id);
+        Task<TEntity?> GetFirstOrDefaultAsync(
+            Expression<Func<TEntity, bool>>? filter = null);
+        Task<IEnumerable<TEntity>> GetAsync(
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             string includeProperties = ""
         );
-        TEntity? GetByID(object id);
-        IEnumerable<TEntity> GetWithRawSql(string query, params object[] parameters);
-        void Insert(TEntity entity);
+        Task<TEntity?> GetByIdAsync(object id);
+        Task<IEnumerable<TEntity>> GetWithRawSqlAsync(string query, params object[] parameters);
+        Task InsertAsync(TEntity entity);
         void Update(TEntity entityToUpdate);
+        Task Save();
     }
 
     public class BaseRepository<TEntity> : IRepository<TEntity> where TEntity : class
@@ -30,12 +33,26 @@ namespace Application.Repositories
             _dbset = _context.Set<TEntity>();
         }
 
-        public IEnumerable<TEntity> GetWithRawSql(string query, params object[] parameters)
+        public async Task<IEnumerable<TEntity>> GetWithRawSqlAsync(string query, params object[] parameters)
         {
-            return _dbset.FromSqlRaw(query, parameters).ToList();
+            return await _dbset.FromSqlRaw(query, parameters).ToListAsync();
         }
 
-        public IEnumerable<TEntity> Get(
+        public async Task<TEntity?> GetFirstOrDefaultAsync(
+            Expression<Func<TEntity, bool>>? filter = null
+            )
+        {
+            IQueryable<TEntity> query = _dbset;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<TEntity>> GetAsync(
             Expression<Func<TEntity, bool>>? filter = null, 
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, 
             string includeProperties = "")
@@ -58,27 +75,27 @@ namespace Application.Repositories
 
             if (orderBy != null)
             {
-                return orderBy(query).ToList();
+                return await orderBy(query).ToListAsync();
             }
             else
             {
-                return query.ToList();
+                return await query.ToListAsync();
             }
         }
 
-        public TEntity? GetByID(object id)
+        public async Task<TEntity?> GetByIdAsync(object id)
         {
-            return _dbset.Find(id);
+            return await _dbset.FindAsync(id);
         }
 
-        public void Insert(TEntity entity)
+        public async Task InsertAsync(TEntity entity)
         {
-            _dbset.Add(entity);
+            await _dbset.AddAsync(entity);
         }
 
-        public void Delete(object id)
+        public async Task DeleteAsync(object id)
         {
-            TEntity? entityToDelete = GetByID(id);
+            TEntity? entityToDelete = await GetByIdAsync(id);
             if (entityToDelete != null)
             {
                 Delete(entityToDelete);
@@ -93,7 +110,7 @@ namespace Application.Repositories
         {
             if (_context.Entry(entityToDelete).State == EntityState.Detached)
             {
-                _dbset.Attach(entityToDelete);
+                _dbset.Attach(entityToDelete);                
             }
             _dbset.Remove(entityToDelete);
         }
@@ -102,6 +119,11 @@ namespace Application.Repositories
         {
             _dbset.Attach(entityToUpdate);
             _context.Entry(entityToUpdate).State = EntityState.Modified;
+        }
+
+        public async Task Save()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

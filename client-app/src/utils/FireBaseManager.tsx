@@ -8,7 +8,6 @@ import {
   createUserWithEmailAndPassword,
   User,
   updateProfile,
-  onAuthStateChanged,
   signOut,
 } from "firebase/auth";
 import { isNull } from "lodash";
@@ -26,6 +25,8 @@ import {
   EMAILCONFIRM_URI,
   LOGIN_URI,
 } from "../config/UriConfig";
+import axiosConn, { axiosSet } from "./ApiConnection";
+import { Vm_User } from "../models/Vm_User";
 
 // Declare Obj
 const firebaseApp = initializeApp({
@@ -76,6 +77,10 @@ const signUpEmail = async (loginStore: LoginStore) => {
       defaultConfirm: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
+        const result = await addDbSignUp(loginStore);
+        if (!result) {
+          return;
+        }
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           email,
@@ -127,6 +132,27 @@ const emailVerification = async (user: User, messageOn: boolean = false) => {
       });
       return;
     });
+};
+
+const saveDbUser = async (loginStore: LoginStore) => {
+  nProgress.start();
+  const user = getCurrentUser();
+  if (user != null) {
+    loginStore.setUserRegisterProp("email", user.email);
+    loginStore.setUserRegisterProp(
+      "username",
+      user.displayName?.toUpperCase() ?? ""
+    );
+    console.log(JSON.stringify(loginStore.userRegisterProps));
+    const result = await addDbSignUp(loginStore);
+    nProgress.done();
+    if (result) {
+      localStorage.setItem("UserDbSave", "Saved");
+      window.open(DASHBOARD_URI, "_self");
+    } else {
+      localStorage.removeItem("UserDbSave");
+    }
+  }
 };
 
 const loginEmail = async (loginStore: LoginStore) => {
@@ -262,9 +288,42 @@ const userUpdateInfo = async (user: any, loginStore: LoginStore) => {
   });
 };
 
+const addDbSignUp = async (loginStore: LoginStore) => {
+  const vm_user: Vm_User = {
+    F_UserName: loginStore.userRegisterProps.username,
+    F_UserEmail: loginStore.userRegisterProps.email,
+    F_Phone: loginStore.userRegisterProps.phone,
+    F_FAX: loginStore.userRegisterProps.fax,
+    F_Dept: loginStore.userRegisterProps.dept,
+    F_CompanyName: loginStore.userRegisterProps.companyname,
+  };
+  const result = await axiosConn.Accounts.signUp(vm_user)
+    .then((result) => {
+      if (result) {
+        return true;
+      }
+    })
+    .catch((error) => {
+      console.log("error : " + error);
+      nProgress.done();
+      MsgManager({
+        error: error,
+      });
+      return false;
+    });
+  return result;
+};
+
 const loginOperationProcess = async (user: any) => {
   // localstorage save token information.
-  localStorage.setItem("Token", user.accessToken);
+  localStorage.setItem("Token", user["accessToken"]);
+  axiosSet.defaults.headers.common["Authorization"] =
+    "Bearer " + user["accessToken"];
+  var user_dbinfo: Vm_User = await axiosConn.Accounts.getDbCurrentUser(
+    user["email"]
+  );
+
+  console.log(JSON.stringify(user_dbinfo));
   let dev = false;
   if (dev) {
     console.log(user);
@@ -272,6 +331,20 @@ const loginOperationProcess = async (user: any) => {
     if (!user.emailVerified) {
       window.open(EMAILCONFIRM_URI, "_self");
       return;
+    }
+
+    // user.providerData[0]["providerId"] === "google.com"
+    if (
+      user_dbinfo === null ||
+      user_dbinfo === undefined ||
+      user_dbinfo === ""
+    ) {
+      console.log("No Db Info");
+      localStorage.removeItem("UserDbSave");
+    } else {
+      console.log("Yes Db Info");
+      console.log("user_dbinfo : " + user_dbinfo);
+      localStorage.setItem("UserDbSave", "Saved");
     }
     window.open(DASHBOARD_URI, "_self");
   }
@@ -293,6 +366,7 @@ export const firebaseConn = {
   emailVerification,
   getCurrentUser,
   setCurrentUserProps,
+  saveDbUser,
   logOut,
 };
 

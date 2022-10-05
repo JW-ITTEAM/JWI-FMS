@@ -85,7 +85,7 @@ function Sidebar(props: ISidebar_Props) {
                 <h5 className="mb-0 font-weight-normal">
                   {props.userInfo?.f_UserName}
                 </h5>
-                <span>Gold Member</span>
+                <span>{props.userInfo?.f_UserEmail}</span>
               </div>
             </div>
             <Dropdown alignRight>

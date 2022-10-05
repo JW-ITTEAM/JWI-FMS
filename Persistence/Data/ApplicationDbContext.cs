@@ -47,7 +47,8 @@ namespace Persistence.Data
 
             modelBuilder.Entity<T_USER>(opt =>
             {
-                opt.HasKey(x => x.F_UserId);
+                opt.HasKey(x => x.F_ID);
+                //opt.HasKey(x => x.F_UserId);
                 opt.Property(x => x.F_UserId).HasMaxLength(20);
                 opt.Property(x => x.F_UserPwd).HasMaxLength(20);
                 opt.Property(x => x.F_UserName).HasMaxLength(30);

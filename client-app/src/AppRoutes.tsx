@@ -1,7 +1,8 @@
 import React, { lazy, Suspense } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import RouteIf from "./components/routeHelper/RouteIf";
-import { logChk } from "./utils/CommonUtil";
+import { DASHBOARD_URI, LOGIN_URI, REQUESTINFO_URI } from "./config/UriConfig";
+import { logChk, userDbSaveChk } from "./utils/CommonUtil";
 
 const OceanImport = lazy(() => import("./pages/shipments/oim/OceanImport"));
 const OceanImportDetail = lazy(
@@ -21,10 +22,12 @@ const BasicTable = lazy(() => import("./pages/tables/BasicTable"));
 const Login = lazy(() => import("./pages/login/Login"));
 const Register = lazy(() => import("./pages/login/Register"));
 const EmailConfirm = lazy(() => import("./pages/login/EmailConfirm"));
+const RequestInfo = lazy(() => import("./pages/login/Register"));
 
 //EYJ
 const FileUpload = lazy(() => import("./pages/fileDrop/FileUploadPage"));
 const IsLogin = logChk(localStorage);
+const IsUserDbSaved = userDbSaveChk(localStorage);
 
 export interface IAppRoutesProps {}
 
@@ -33,7 +36,7 @@ export class AppRoutes extends React.Component<IAppRoutesProps> {
     return (
       <Suspense>
         <Switch>
-          <RouteIf path="/dashboard" component={Dashboard} />
+          <RouteIf path={DASHBOARD_URI} component={Dashboard} />
           <RouteIf exact path="/shipments/oim" component={OceanImport} />
           <RouteIf
             path="/shipments/oim_detail/"
@@ -53,10 +56,19 @@ export class AppRoutes extends React.Component<IAppRoutesProps> {
           />
           <RouteIf path="/tables/basic-table" component={BasicTable} />
           <RouteIf path="/emailconfirm" component={EmailConfirm} />
-          <Route path="/login" component={Login} />
+          <Route path={LOGIN_URI} component={Login} />
           <Route path="/register" component={Register} />
+          <Route path={REQUESTINFO_URI} component={RequestInfo} />
           <Route exact path="/fileDrop/file_upload/" component={FileUpload} />
-          {IsLogin ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
+          {IsLogin ? (
+            IsUserDbSaved ? (
+              <Redirect to={DASHBOARD_URI} />
+            ) : (
+              <Redirect to={REQUESTINFO_URI} />
+            )
+          ) : (
+            <Redirect to={LOGIN_URI} />
+          )}
         </Switch>
       </Suspense>
     );

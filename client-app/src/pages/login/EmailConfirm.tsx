@@ -1,4 +1,4 @@
-import { User } from "firebase/auth";
+import { getAuth, User } from "firebase/auth";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { useLocation, withRouter } from "react-router-dom";
@@ -23,6 +23,17 @@ function EmailConfirm(props: IEmailConfirmProps) {
     let user = firebaseConn.getCurrentUser();
     if (user) firebaseConn.emailVerification(user, true);
   };
+
+  // const testFunc = async () => {
+  //   const auth = getAuth();
+  //   const user = firebaseConn.getCurrentUser();
+
+  //   if (user != null) {
+  //     user.providerData.forEach((profile) => {
+  //       console.log("profile : " + JSON.stringify(profile));
+  //     });
+  //   }
+  // };
 
   return (
     <div>
@@ -54,6 +65,11 @@ function EmailConfirm(props: IEmailConfirmProps) {
                     Resend Email
                   </button>
                 </div>
+                {/* <div className="col-12">
+                  <button className="btn btn-primary" onClick={testFunc}>
+                    TestFunc
+                  </button>
+                </div> */}
               </div>
             </div>
           </div>

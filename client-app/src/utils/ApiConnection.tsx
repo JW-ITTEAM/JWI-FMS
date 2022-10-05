@@ -3,11 +3,12 @@ import {
   FMS_API_URL,
   API_URL_OCEAN_IMPORT_LIST,
   API_URL_OCEAN_IMPORT_DETAIL,
-  API_URL_LOGIN_PROCESS,
+  API_URL_SIGN_UP_PROCESS,
+  API_URL_DB_CURRENT_USER,
 } from "../config/SystemConfig";
 import { MsgManager } from "./MsgManager";
 
-const axiosSet = axios.create({
+export const axiosSet = axios.create({
   baseURL: FMS_API_URL,
   headers: {
     Accept: "application/json",
@@ -61,13 +62,19 @@ const OceanImports = {
     ),
 };
 
-const Logins = {
-  signIn: (user: object) => requests.post(API_URL_LOGIN_PROCESS, user),
+const Accounts = {
+  signUp: (user: object) => requests.post(API_URL_SIGN_UP_PROCESS, user),
+  getDbCurrentUser: (email: string) =>
+    requests
+      .get(API_URL_DB_CURRENT_USER + "?userEmail=" + email)
+      .then((responseBody) => {
+        return responseBody;
+      }),
 };
 
 const axiosConn = {
   OceanImports,
-  Logins,
+  Accounts,
 };
 
 export default axiosConn;
