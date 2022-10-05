@@ -26,13 +26,13 @@ export default function FileUploadForm({fileItems, setFileItems} : {fileItems:Ar
   }; 
    
   // available file extension and file size
-  const ALLOW_FILE_EXTENSION = "pdf,docx, jpg,png";
+  const ALLOW_FILE_EXTENSION = "pdf, docx, jpg, png, json, xml";
   const FILE_SIZE_MAX_LIMIT = 5 * 1024 * 1024;  // 5MB
    
   /**
    * when file  is selected :  onChangeHandler
    * file validation : file extension and size
-   * assign file state : file state에 값을 할당.
+   * assign file state 
    * @param e 
    * @returns 
    */
